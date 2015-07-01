@@ -1,0 +1,3 @@
+Images are retired when one of two things happen:
+	- The first three classifications are blank (no marks made)
+	- Classification count is >= 15
