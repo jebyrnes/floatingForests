@@ -47,10 +47,10 @@ ffUsers_summary <- ffUsers %>%
 
 ffUsers_summary$cumPercent=cumsum(ffUsers_summary$percent)
 
-
+pdf(file="../output/classifications_cummulative_percent.pdf",width=128,height=96,pointsize=10)
 ggplot(data=ffUsers_summary) + geom_line(mapping=aes(x=n, y=cumPercent))+
   scale_x_log10(breaks = trans_breaks("log10", function(x) 10^x)) +
   theme_minimal(base_size=17) +
   xlab("Number of Classifications") +
   ylab("Cummulative % of\n Classifications")
-
+dev.off()
