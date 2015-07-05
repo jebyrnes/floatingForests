@@ -25,10 +25,10 @@ rasterizeFFImage <- function(arow){
 }
 
 #images are 532x484
-getPoly <- function(arow, xpixels = 532, ypixels=484){
+#takes a single relative path and a row of data and returns a polygon
+getPoly <- function(arow, polyPath, xpixels = 532, ypixels=484){
   
   #transform the row into a 
-  polyPath <- strsplit(as.character(arow$relPath), "\\]")[[1]]
   polyPath <- polyPath[-length(polyPath)]
   polyPath <- t(sapply(polyPath, function(x){
     x <- gsub("^(.*)\\[", "", x)
@@ -40,7 +40,7 @@ getPoly <- function(arow, xpixels = 532, ypixels=484){
   
   #make it absolute points  
   polyPath[,2] <- -1*(polyPath[,2]) #invert b/c y is opposite in the FF DB
-
+  
   polyPath[,1] <- cumsum(polyPath[,1])
   polyPath[,2] <- cumsum(polyPath[,2])
   
@@ -62,3 +62,25 @@ getPoly <- function(arow, xpixels = 532, ypixels=484){
   ret <- Polygon(polyPath, hole=F)
   ret
 }
+
+#takes a dataframe and returns a Polygons object
+#with user_name as default for ID
+getPolys <- function(aframe, idForPolys=aframe$user_name[1]){
+  polyPaths <- strsplit(as.character(aframe$relPath), "\\]")
+  polys <- vector("list", length(polyPaths))
+  
+  for(i in 1:length(polyPaths)){
+    polys[[i]] <- getPoly(aframe[i,], polyPaths[[i]])
+  }
+  
+  p <- Polygons(polys, ID=idForPolys)
+  
+}
+
+#takes a dataframe and returns a SpatialPolygons object
+getSpatialPolysForOneImage <- function(aframe, proj="+proj=longlat +datum=WGS84"){
+  polys <- plyr::dlply(aframe, .(user_name), getPolys)
+  SpatialPolygons(polys, proj4string=CRS(proj))
+}
+
+

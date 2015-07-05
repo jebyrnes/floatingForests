@@ -34,12 +34,8 @@ plot(poly, col="red", add=T)
 oneImage <- hasPaths %>%
   filter(subject_zooniverse_id == hasPaths$subject_zooniverse_id[2000])
 
+polys <- getSpatialPolysForOneImage(oneImage)
 
-polys <- sapply(1:nrow(oneImage), function(x) {
-  Polygons(list(getPoly(oneImage[x,])), ID=paste0(oneImage[x,]$classification_id, x))
-  })
-#polys <- SpatialPolygons(list(Polygons(polys, 1)), proj4string=CRS("+proj=longlat +datum=WGS84"))
-polys <- SpatialPolygons(polys, proj4string=CRS("+proj=longlat +datum=WGS84"))
 plot(polys, col="red")
 
 rownames(oneImage) = paste0(oneImage$classification_id, 1:nrow(oneImage))
@@ -55,3 +51,20 @@ tileBrick <- rasterizeFFImage(oneImage[1,])
 plotRGB(tileBrick)
 #plot(rastLayer, add=T, density=0.1)
 plot(polysData,  add=T)
+
+
+jointAreas <- 
+  sapply(1:14, function(x) length(which(as.matrix(rastLayer)==x)))
+
+qplot(1:14, jointAreas, geom=c("point", "line")) +
+  theme_bw()+
+  xlab("Number of Users Selecting Pixels") +
+  ylab("Number of Pixels")
+
+usersSelection <- 
+  sapply(1:14, function(x) length(which(as.matrix(rastLayer)>=x)))
+
+qplot(1:14, usersSelection, geom=c("point", "line")) +
+  theme_bw()+
+  xlab("Number of Users Selecting Pixels") +
+  ylab("Number of Pixels")
