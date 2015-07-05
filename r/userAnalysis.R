@@ -15,8 +15,8 @@ ffUsers <- kelpzoo %>% group_by(user_name) %>%
 #plot a histogram
 library(ggplot2)
 library(scales)
-
 options(scipen=999)#supress scientific notation
+
 pdf(file="../output/classifications_per_user_hist.pdf")
 ggplot(data=ffUsers) + geom_bar(mapping=aes(x=n), binwidth=.01) +
   scale_x_log10(breaks = trans_breaks("log10", function(x) 10^x)) +
@@ -36,3 +36,21 @@ dev.off()
 #who are the top few?
 ffUsers %>% arrange(desc(n))
 ffUsers %>% filter(user_name=="jebyrnes")
+
+allClassifications <- sum(ffUsers$n)
+
+#get some stats on fraction of contribution
+ffUsers_summary <- ffUsers %>%
+  group_by(n) %>%
+  summarise(count=n(), total=sum(n), percent=100*total/allClassifications) %>%
+  arrange(n)
+
+ffUsers_summary$cumPercent=cumsum(ffUsers_summary$percent)
+
+
+ggplot(data=ffUsers_summary) + geom_line(mapping=aes(x=n, y=cumPercent))+
+  scale_x_log10(breaks = trans_breaks("log10", function(x) 10^x)) +
+  theme_minimal(base_size=17) +
+  xlab("Number of Classifications") +
+  ylab("Cummulative % of\n Classifications")
+
