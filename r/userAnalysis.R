@@ -8,15 +8,16 @@
 
 source("./parseZooData.R")
 
+library(ggplot2)
+library(scales)
+options(scipen=999)#supress scientific notation
+
+
 #What are the contributions of individual users?
 ffUsers <- kelpzoo %>% group_by(user_name) %>%
   summarise(n=length(unique(subject_zooniverse_id))) %>% ungroup()
 
 #plot a histogram
-library(ggplot2)
-library(scales)
-options(scipen=999)#supress scientific notation
-
 pdf(file="../output/classifications_per_user_hist.pdf")
 ggplot(data=ffUsers) + geom_bar(mapping=aes(x=n), binwidth=.01) +
   scale_x_log10(breaks = trans_breaks("log10", function(x) 10^x)) +
@@ -24,6 +25,10 @@ ggplot(data=ffUsers) + geom_bar(mapping=aes(x=n), binwidth=.01) +
   xlab("Number of Classifications") +
   ylab("Number of Users")
 dev.off()
+
+#some stats
+mean(ffUsers$n)
+median(ffUsers$n)
 
 #treemap! from https://zoobackchannel.wordpress.com/2013/05/01/treemaps-of-volunteer-contributions/
 library(treemap)
@@ -47,7 +52,7 @@ ffUsers_summary <- ffUsers %>%
 
 ffUsers_summary$cumPercent=cumsum(ffUsers_summary$percent)
 
-pdf(file="../output/classifications_cummulative_percent.pdf",width=128,height=96,pointsize=10)
+pdf(file="../output/classifications_cummulative_percent.pdf",width=96,height=96,pointsize=10)
 ggplot(data=ffUsers_summary) + geom_line(mapping=aes(x=n, y=cumPercent))+
   scale_x_log10(breaks = trans_breaks("log10", function(x) 10^x)) +
   theme_minimal(base_size=17) +
