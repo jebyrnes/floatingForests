@@ -10,6 +10,7 @@
 
 source("./FFmethods.R")
 source("./parseZooData.R")
+library(ggplot2)
 
 hasPaths <- kelpzoo %>% filter(nchar(relPath)>0)
 
@@ -62,7 +63,11 @@ dev.off()
 #######
 r <- raster(crs=polys@proj4string, ext=extent(polys))
 rastLayer <- rasterize(polys, r, fun="count")
-plot(rastLayer)
+jpeg("../output/oneImage_coastline_raster.jpg")
+plot(rastLayer,
+     legend.args=list(text='# of Users\nSelecting', 
+                      side=3, font=2, line=0.5, cex=0.8))
+dev.off()
 
 #######
 # Combine with actual image from FF
@@ -73,8 +78,10 @@ tileBrick <- rasterizeFFImage(oneImage[1,])
 #plot(rastLayer, add=T, density=0.1)
 
 #plot the base image & the classifications
+jpeg("../output/oneImage_coastline_with_outlines.jpg")
 plotRGB(tileBrick)
 plot(polysData,  add=T)
+dev.off()
 
 #######
 #What was the shared area selected with precisely?
@@ -94,10 +101,12 @@ qplot(1:14, jointAreas, geom=c("point", "line")) +
 usersSelection <- 
   sapply(1:14, function(x) length(which(as.matrix(rastLayer)>=x)))
 
+jpeg("../output/oneImage_pixels_selected_by_n_users.jpg")
 qplot(1:14, usersSelection, geom=c("point", "line")) +
-  theme_bw()+
+  theme_bw(base_size=17)+
   xlab("Number of Users Selecting >= X # of Pixels") +
   ylab("Number of Pixels")
+dev.off()
 
 #######
 #Randomization of users and raster area
@@ -112,6 +121,8 @@ pixelsFromNUsers <- lapply(1:u, function(nusers){
 })
 
 pixelsFromNUsers <- plyr::ldply(pixelsFromNUsers)
+
+write.csv(pixelsFromNUsers, "../output/oneImage_pixels_from_n_users.csv")
 
 qplot(nusers, pixels, geom=c("point")) +
   theme_bw(base_size=17)+
