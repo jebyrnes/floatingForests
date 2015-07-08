@@ -30,13 +30,15 @@ dev.off()
 mean(ffUsers$n)
 median(ffUsers$n)
 
+
 #treemap! from https://zoobackchannel.wordpress.com/2013/05/01/treemaps-of-volunteer-contributions/
 library(treemap)
+ffUsers$perc <- paste0(round(100*ffUsers$n/sum(ffUsers$n), 2),"%")
+
 pdf(file="../output/classifications_per_user.pdf",width=128,height=96,pointsize=10)
 treemap(as.data.frame(ffUsers), index='user_name', vSize='n', vColor='user_name',
        type='index',fontsize.labels=0,lowerbound.cex.labels=1,title='')
 dev.off()
-
 
 #who are the top few?
 ffUsers %>% arrange(desc(n))
