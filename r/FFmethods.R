@@ -97,3 +97,22 @@ getSpatialPolysDataFrameForOneImage <- function(aframe, proj="+proj=longlat +dat
   SpatialPolygonsDataFrame(spatialPolys, data=as.data.frame(newFrame))
 }
 
+#takes a list of indices of users and returns the 
+#total or shared # of pixels in a raster
+getAreaFromUserCombn <- function(idx, spdf=polysData, type="shared"){
+  
+  #aggregate all polygons to one raster
+  
+  combnR <- raster(crs=spdf@proj4string, ext=extent(spdf))
+  rastLayerCombn <- rasterize(SpatialPolygons(spdf@polygons)[idx], combnR, 
+                              fun="count")  
+  if(type=="total") {
+    return(length(which(as.matrix(rastLayerCombn)>=1)))
+  }
+  
+  #defaults to shared
+  length(which(as.matrix(rastLayerCombn)==length(idx)))
+  
+}
+
+
