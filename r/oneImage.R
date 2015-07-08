@@ -32,6 +32,7 @@ plotRGB(img)
 plot(poly, col="red", add=T)
 
 ### ONE IMAGE
+#current image 2000 = 
 oneImage <- hasPaths %>%
   filter(subject_zooniverse_id == hasPaths$subject_zooniverse_id[2000])
 
@@ -63,10 +64,11 @@ dev.off()
 #######
 r <- raster(crs=polys@proj4string, ext=extent(polys))
 rastLayer <- rasterize(polys, r, fun="count")
-jpeg("../output/oneImage_coastline_raster.jpg")
+jpeg("../output/oneImage_coastline_raster.jpg", type="quartz",
+     height=640, width=740)
 plot(rastLayer,
      legend.args=list(text='# of Users\nSelecting', 
-                      side=3, font=2, line=0.5, cex=0.8))
+                      side=3, font=2.2, line=0.5, cex=0.8))
 dev.off()
 
 #######
@@ -78,7 +80,7 @@ tileBrick <- rasterizeFFImage(oneImage[1,])
 #plot(rastLayer, add=T, density=0.1)
 
 #plot the base image & the classifications
-jpeg("../output/oneImage_coastline_with_outlines.jpg")
+jpeg("../output/oneImage_coastline_with_outlines.jpg", type="quartz")
 plotRGB(tileBrick)
 plot(polysData,  add=T)
 dev.off()
@@ -87,9 +89,9 @@ dev.off()
 #What was the shared area selected with precisely?
 #######
 jointAreas <- 
-  sapply(1:14, function(x) length(which(as.matrix(rastLayer)==x)))
+  sapply(1:13, function(x) length(which(as.matrix(rastLayer)==x)))
 
-qplot(1:14, jointAreas, geom=c("point", "line")) +
+qplot(1:13, jointAreas, geom=c("point", "line")) +
   theme_bw()+
   xlab("Number of Users Selecting Pixels") +
   ylab("Number of Pixels")
@@ -99,10 +101,10 @@ qplot(1:14, jointAreas, geom=c("point", "line")) +
 #######
 
 usersSelection <- 
-  sapply(1:14, function(x) length(which(as.matrix(rastLayer)>=x)))
+  sapply(1:13, function(x) length(which(as.matrix(rastLayer)>=x)))
 
-jpeg("../output/oneImage_pixels_selected_by_n_users.jpg")
-qplot(1:14, usersSelection, geom=c("point", "line")) +
+jpeg("../output/oneImage_pixels_selected_by_n_users.jpg", type="quartz")
+qplot(1:13, usersSelection, geom=c("point", "line")) +
   theme_bw(base_size=17)+
   xlab("Number of Users Selecting >= X # of Pixels") +
   ylab("Number of Pixels")
