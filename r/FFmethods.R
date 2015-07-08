@@ -83,4 +83,17 @@ getSpatialPolysForOneImage <- function(aframe, proj="+proj=longlat +datum=WGS84"
   SpatialPolygons(polys, proj4string=CRS(proj))
 }
 
+#takes a dataframe and returns a SpatialPolygons object
+getSpatialPolysDataFrameForOneImage <- function(aframe, proj="+proj=longlat +datum=WGS84"){
+  spatialPolys <- getSpatialPolysForOneImage(aframe, proj)
+
+  newFrame <- aframe %>%
+    group_by(classification_id, user_name,subject_zooniverse_id,created_at,
+             rejection_water_percent,rejection_cloud_percent,clouds) %>%
+    summarise(nBeds = length(user_name))
+  
+  row.names(newFrame) <- newFrame$user_name
+  
+  SpatialPolygonsDataFrame(spatialPolys, data=as.data.frame(newFrame))
+}
 

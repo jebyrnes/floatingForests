@@ -39,7 +39,7 @@ polys <- getSpatialPolysForOneImage(oneImage)
 plot(polys, col="red")
 
 rownames(oneImage) = paste0(oneImage$classification_id, 1:nrow(oneImage))
-polysData <- SpatialPolygonsDataFrame(polys, data=as.data.frame(oneImage))
+polysData <- getSpatialPolysDataFrameForOneImage(oneImage)
 
 plot(polysData, col=rainbow(13)[as.numeric(as.factor(polysData@data$user_name))], dens=85)
 
