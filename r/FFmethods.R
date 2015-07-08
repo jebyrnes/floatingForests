@@ -79,7 +79,7 @@ getPolys <- function(aframe, idForPolys=aframe$user_name[1]){
 
 #takes a dataframe and returns a SpatialPolygons object
 getSpatialPolysForOneImage <- function(aframe, proj="+proj=longlat +datum=WGS84"){
-  polys <- plyr::dlply(aframe, .(user_name), getPolys)
+  polys <- plyr::dlply(aframe, "user_name", getPolys)
   SpatialPolygons(polys, proj4string=CRS(proj))
 }
 
