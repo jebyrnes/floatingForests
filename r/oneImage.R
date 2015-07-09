@@ -67,13 +67,8 @@ rastLayer <- rasterize(polys, r, fun="count")
 jpeg("../output/oneImage_coastline_raster.jpg", type="quartz",
      height=640, width=740)
 plot(rastLayer,
-<<<<<<< HEAD
-     legend.args=list(text='# of\nUsers', 
-                      side=3, font=2.2, line=0.5, cex=1))
-=======
      legend.args=list(text='# of Users\nSelecting', 
                       side=3, font=2.2, line=0.5, cex=0.8))
->>>>>>> eaa625101015ba42a690c7a5e7febefa6221e59d
 dev.off()
 
 #######
@@ -85,11 +80,8 @@ tileBrick <- rasterizeFFImage(oneImage[1,])
 #plot(rastLayer, add=T, density=0.1)
 
 #plot the base image & the classifications
-<<<<<<< HEAD
-jpeg("../output/oneImage_coastline_with_outlines.jpg", type="cairo")
-=======
-jpeg("../output/oneImage_coastline_with_outlines.jpg", type="quartz")
->>>>>>> eaa625101015ba42a690c7a5e7febefa6221e59d
+jpeg("../output/oneImage_coastline_with_outlines.jpg", 
+     type="quartz", width=600, height=600)
 plotRGB(tileBrick)
 plot(polysData,  add=T)
 dev.off()
@@ -112,15 +104,12 @@ qplot(1:13, jointAreas, geom=c("point", "line")) +
 usersSelection <- 
   sapply(1:13, function(x) length(which(as.matrix(rastLayer)>=x)))
 
-<<<<<<< HEAD
-jpeg("../output/oneImage_pixels_selected_by_n_users.jpg", type="cairo")
-=======
-jpeg("../output/oneImage_pixels_selected_by_n_users.jpg", type="quartz")
->>>>>>> eaa625101015ba42a690c7a5e7febefa6221e59d
+jpeg("../output/oneImage_pixels_selected_by_n_users.jpg", type="quartz",
+     width=600, height=500)
 qplot(1:13, usersSelection, geom=c("point", "line")) +
   theme_bw(base_size=17)+
-  xlab("Number of Users Selecting >= X # of Pixels") +
-  ylab("Number of Pixels")
+  xlab("\nNumber of Users Selecting >= X # of Pixels") +
+  ylab("Number of Pixels\n")
 dev.off()
 
 #######
@@ -129,6 +118,7 @@ dev.off()
 
 u <- length(unique(polysData$user_name))
 
+###THIS WILL TAKE A LONG TIME - RUN IT ON A SERVER
 pixelsFromNUsers <- lapply(1:u, function(nusers){
   pixels <- combn(u, nusers, getAreaFromUserCombn)
   
@@ -137,10 +127,18 @@ pixelsFromNUsers <- lapply(1:u, function(nusers){
 
 pixelsFromNUsers <- plyr::ldply(pixelsFromNUsers)
 
-write.csv(pixelsFromNUsers, "../output/oneImage_pixels_from_n_users.csv")
+write.csv(pixelsFromNUsers, 
+          "../output/oneImage_pixels_from_n_users.csv", 
+          row.names=F)
 
-qplot(nusers, pixels, geom=c("point")) +
+### OR IF YOU HAVE RUN IT ELSEWHERE...
+pixelsFromNUsers <- read.csv("../output/oneImage_pixels_from_n_users.csv")
+
+jpeg("../output/oneImage_pixels_from_n_users_shared_allusers.jpg", 
+     type="quartz", width=600, height=600)
+qplot(nUsers, pixels, data=pixelsFromNUsers, geom=c("point")) +
   theme_bw(base_size=17)+
   xlab("Number of Users") +
-  ylab("Total Number of Shared Pixels Selected")
+  ylab("Total Number of Shared Pixels Selected\n")
+dev.off()
 
