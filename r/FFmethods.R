@@ -5,6 +5,7 @@ library(readr)
 library(maptools)
 library(raster)
 library(jpeg)
+library(rgeos)
 
 getImageInfo <- function(imageID, subjURL = "https://api.zooniverse.org/projects/kelp/subjects/"){
   fromJSON(getURL(paste0(subjURL, imageID)))
