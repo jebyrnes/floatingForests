@@ -12,7 +12,7 @@ source("./FFmethods.R")
 source("./parseZooData.R")
 library(ggplot2)
 
-hasPaths <- kelpzoo %>% filter(nchar(relPath)>0)
+hasPaths <- kelpzoo %>% filter(nchar(relPath)>0) #%>% filter(year(timestamp)<2000) %>% filter(upper_right_y>0)
 
 sampledSubjects <- hasPaths %>% 
   group_by(subject_zooniverse_id) %>%
