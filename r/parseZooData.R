@@ -10,6 +10,8 @@
 
 library(dplyr)
 library(readr)
+library(lubridate)
 
-kelpzoo <- read_csv("../data/2015-06-30_kelp_classifications 2.csv")
+kelpzoo <- read_csv("../data/2015-06-30_kelp_classifications 2.csv",
+                    col_types="cccccddddcccdddddddccddd")
 

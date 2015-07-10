@@ -27,7 +27,7 @@ rasterizeFFImage <- function(arow){
 #images are 532x484
 #takes a single relative path and a row of data and returns a polygon
 getPoly <- function(arow, polyPath, xpixels = 532, ypixels=484){
-  
+
   #transform the row into a 
   polyPath <- polyPath[-length(polyPath)]
   polyPath <- t(sapply(polyPath, function(x){
