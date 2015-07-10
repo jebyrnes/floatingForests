@@ -18,6 +18,12 @@ sampledSubjects <- hasPaths %>%
   group_by(subject_zooniverse_id) %>%
   summarise(nPolys=n(), nUsers=length(unique(user_name)))
 
+
+sampledSubjectsAll <- kelpzoo %>% 
+  group_by(subject_zooniverse_id) %>%
+  summarise(nClassifications=length(unique(user_name)))
+
+
 counts <- sampledSubjects%>%group_by(nUsers) %>% summarise(IDS=n())
 
 #images are 532x484
@@ -83,7 +89,7 @@ tileBrick <- rasterizeFFImage(oneImage[1,])
 jpeg("../output/oneImage_coastline_with_outlines.jpg", 
      type="quartz", width=600, height=600)
 plotRGB(tileBrick)
-plot(polysData,  add=T)
+plot(polys,  add=T)
 dev.off()
 
 #######
