@@ -16,7 +16,7 @@ rasterizeFFImage <- function(arow){
   loc <- gsub("http://", "https://static.zooniverse.org/", imageInfo$location)
   
   img <-brick(loc,              
-               crs="+proj=longlat +datum=WGS84")
+               crs="+proj=merc +datum=WGS84")
   
   img@extent = extent(c(arow$lower_left_x, arow$upper_right_x, 
                         arow$lower_left_y, arow$upper_right_y))
@@ -79,13 +79,13 @@ getPolys <- function(aframe, idForPolys=aframe$user_name[1]){
 }
 
 #takes a dataframe and returns a SpatialPolygons object
-getSpatialPolysForOneImage <- function(aframe, proj="+proj=longlat +datum=WGS84"){
+getSpatialPolysForOneImage <- function(aframe, proj="+proj=merc +datum=WGS84"){
   polys <- plyr::dlply(aframe, "user_name", getPolys)
   SpatialPolygons(polys, proj4string=CRS(proj))
 }
 
 #takes a dataframe and returns a SpatialPolygons object
-getSpatialPolysDataFrameForOneImage <- function(aframe, proj="+proj=longlat +datum=WGS84"){
+getSpatialPolysDataFrameForOneImage <- function(aframe, proj="+proj=merc +datum=WGS84"){
   spatialPolys <- getSpatialPolysForOneImage(aframe, proj)
 
   newFrame <- aframe %>%
