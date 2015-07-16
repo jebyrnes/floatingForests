@@ -90,7 +90,8 @@ getSpatialPolysDataFrameForOneImage <- function(aframe, proj="+proj=merc +datum=
 
   newFrame <- aframe %>%
     group_by(classification_id, user_name,subject_zooniverse_id,created_at,
-             rejection_water_percent,rejection_cloud_percent,clouds) %>%
+             rejection_water_percent,rejection_cloud_percent,clouds,
+             upper_right_x, upper_right_y, lower_left_x, lower_left_y) %>%
     summarise(nBeds = length(user_name)) %>%
   ungroup()
   
