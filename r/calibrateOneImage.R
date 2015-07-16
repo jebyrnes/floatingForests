@@ -22,3 +22,17 @@ latBounds <- bbox(polysData)[2,]
 #plot them together
 plot(caKelp.spoints, xlim=longBounds, ylim=latBounds, pch=20, cex=0.5)
 plot(polysData, add=T)
+
+####
+#look at the real coastline
+####
+lims <- as.numeric(polysData@data[1,c(10,8,11,9)])
+coasts <- readOGR("../data/gshhg-shp-2.3.4/GSHHS_shp/h", layer="GSHHS_h_L1",  useC=FALSE)
+
+
+plot(coasts, xlim=lims[1:2], ylim=lims[3:4], lwd=4)
+plot(polysData, add=T)
+
+tileBrick <- rasterizeFFImage(polysData@data[1,]$subject_zooniverse_id)
+plotRGB(tileBrick)
+plot(coasts, xlim=lims[1:2], ylim=lims[3:4], lwd=4, add=T)

@@ -65,6 +65,12 @@ for(i in 4:nrow(Imgs)){
   #get the image
   tileBrick <- rasterizeFFImage(arow)
   
+ # tileBrick <- tileBricka
+#  proj4string(tileBrick) <- "+proj=utm +zone=10 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
+#  tileBrick <- projectRaster(tileBrick, crs=proj4string(coasts))
+#  extent(tileBrick)
+#  extent(tileBricka)
+  
   #start a jpg
   jpeg(paste0("../output/coastline_matchup/", arow$subject_zooniverse_id, 
               "_", limsPaste, ".jpg"),
