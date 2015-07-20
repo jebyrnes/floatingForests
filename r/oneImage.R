@@ -40,7 +40,8 @@ plot(poly, col="red", add=T)
 ### ONE IMAGE
 #current image 2000 = 
 oneImage <- hasPaths %>%
-  filter(subject_zooniverse_id == hasPaths$subject_zooniverse_id[2000])
+#  filter(subject_zooniverse_id == hasPaths$subject_zooniverse_id[2000])
+  filter(subject_zooniverse_id == "AKP00016e6")
 
 #get the spatial polygons
 polys <- getSpatialPolysForOneImage(oneImage)
