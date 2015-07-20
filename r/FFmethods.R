@@ -122,7 +122,8 @@ getAreaFromUserCombn <- function(idx, spdf=polysData, type="shared"){
 getCorrectCorners <- function(subject="AKP00016e6",
                               n_row=20, n_cols=20,
                               scene_y_pixels =7981, 
-                              scene_x_pixels = 7271){
+                              scene_x_pixels = 7271,
+                              proj="+proj=utm +zone=10 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"){
 
   imageInfo <- getImageInfo(subject)
   scene <-imageInfo$metadata$base_file_name
@@ -175,7 +176,7 @@ getCorrectCorners <- function(subject="AKP00016e6",
                  xmn=scene_ll[1], xmx=scene_ur[1], 
                  ymn=scene_ll[2], ymx=scene_ur[2])
   #for CA
-  projection(ascene) <- "+proj=utm +zone=10 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
+  projection(ascene) <- proj
 
   newx <- xFromCol(ascene, c(ll_pixels[1], ur_pixels[1]))
   newy <- yFromRow(ascene, c(ll_pixels[2], ur_pixels[2]))
