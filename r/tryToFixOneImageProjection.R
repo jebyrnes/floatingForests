@@ -1,9 +1,12 @@
-
+#load functions needed
 source("./FFmethods.R")
 source("./parseZooData.R")
 library(ggplot2)
 
+#load dataset to work on
 load("../data/oneImage_data_only_AKP00016e6.RData")
+
+#run the correction on corners
 corners <- getCorrectCorners(oneImage$subject_zooniverse_id[1])
 
 #fix the corners to the proper projection
@@ -12,6 +15,7 @@ oneImage$lower_left_y <- corners$ll[2]
 oneImage$upper_right_x <- corners$ur[1]
 oneImage$upper_right_y <- corners$ur[2]
 
+#turn into a polygon
 polysData <- getSpatialPolysDataFrameForOneImage(oneImage, 
                                                  proj="+proj=utm +zone=10 +ellps=WGS84 +datum=WGS84 +units=m +no_defs")
 
