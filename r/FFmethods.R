@@ -11,12 +11,12 @@ getImageInfo <- function(imageID, subjURL = "https://api.zooniverse.org/projects
   fromJSON(getURL(paste0(subjURL, imageID)))
 }
 
-rasterizeFFImage <- function(arow){
+rasterizeFFImage <- function(arow, proj="+proj=utm +datum=WGS84"){
   imageInfo <- getImageInfo(arow$subject_zooniverse_id)
   loc <- gsub("http://", "https://static.zooniverse.org/", imageInfo$location)
   
   img <-brick(loc,              
-               crs="+proj=merc +datum=WGS84")
+               crs=proj)
   
   img@extent = extent(c(arow$lower_left_x, arow$upper_right_x, 
                         arow$lower_left_y, arow$upper_right_y))
@@ -118,4 +118,67 @@ getAreaFromUserCombn <- function(idx, spdf=polysData, type="shared"){
   
 }
 
+######Get correct corners
+getCorrectCorners <- function(subject="AKP00016e6",
+                              n_row=20, n_cols=20,
+                              scene_y_pixels =7981, 
+                              scene_x_pixels = 7271){
 
+  imageInfo <- getImageInfo(subject)
+  scene <-imageInfo$metadata$base_file_name
+  lower_left <- imageInfo$metadata$lower_left #offset of row and col num
+  upper_right <- imageInfo$metadata$upper_right
+
+  #get row, col info
+  row_no <- imageInfo$metadata$row_no
+  col_no <- imageInfo$metadata$col_no
+
+
+  #I know row and col #
+  row_no <- imageInfo$metadata$row_no
+  col_no <- imageInfo$metadata$col_no
+
+  #I can calculate central lat/long
+  cent <- c((lower_left[1] + upper_right[1])/2, 
+          (lower_left[2] + upper_right[2])/2)
+
+
+  #i can calculate central pixels
+  cent_y_pixel <- (scene_y_pixels / n_row) * row_no 
+  cent_x_pixel <- (scene_x_pixels / n_cols) *col_no
+
+
+  #I can calculate image size?
+  image_chunk_width = scene_x_pixels / n_row
+  image_chunk_height = scene_y_pixels / n_cols
+
+  ll_pixels <- c(cent_x_pixel-image_chunk_width/2, 
+               cent_y_pixel-image_chunk_height/2)
+  ur_pixels <- c(cent_x_pixel+image_chunk_width/2, 
+               cent_y_pixel+image_chunk_height/2)
+
+  #i can calculate rx = cdx/cpx
+  conv_deg <- abs(c((upper_right[1] - lower_left[1])/image_chunk_width, 
+                  (upper_right[2] - lower_left[2])/image_chunk_height))
+
+  #I can calculate the scene xmin and ymin
+  #cdx = cpx*d/p + xd0
+  scene_ll <- c(cent[1]-cent_x_pixel*conv_deg[1],
+              cent[2]-cent_y_pixel*conv_deg[2])
+
+  scene_ur <- c(scene_ll[1]+scene_x_pixels*conv_deg[1], 
+              scene_ll[2]+scene_y_pixels*conv_deg[2])
+
+  #OK, now make a raster
+  library(raster)
+  ascene <- raster(nrow=scene_y_pixels, ncol=scene_x_pixels, 
+                 xmn=scene_ll[1], xmx=scene_ur[1], 
+                 ymn=scene_ll[2], ymx=scene_ur[2])
+  #for CA
+  projection(ascene) <- "+proj=utm +zone=10 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
+
+  newx <- xFromCol(ascene, c(ll_pixels[1], ur_pixels[1]))
+  newy <- yFromRow(ascene, c(ll_pixels[2], ur_pixels[2]))
+
+  list(ll=c(newx[1], newy[1]), ur = c(newx[2], newy[2]))
+}
