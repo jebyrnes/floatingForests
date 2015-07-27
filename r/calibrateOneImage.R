@@ -7,7 +7,7 @@ load("../data/oneImagesAKP00016e6.Rdata")
 
 #polysData <- spTransform(polysData, "+proj=merc +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0")
 library(rgdal)
-writeOGR(polysData, "../data/", "AKP00016e6", driver="ESRI Shapefile")
+#writeOGR(polysData, "../data/", "AKP00016e6", driver="ESRI Shapefile")
 #load the SBCC data and reprocess into a SpatialPoints object
 caKelp <- readMat("../data/kelp_043035_7_24_1999.mat")
 caKelp <- caKelp$kelp[which(caKelp$kelp[,3]>0),]
