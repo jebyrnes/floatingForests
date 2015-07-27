@@ -10,6 +10,8 @@
 
 source("./FFmethods.R")
 source("./parseZooData.R")
+#oneImage <- read.csv("../data/AKP00016e6.csv")
+
 library(ggplot2)
 
 hasPaths <- kelpzoo %>% filter(nchar(relPath)>0) #%>% filter(year(timestamp)<2000) %>% filter(upper_right_y>0)
