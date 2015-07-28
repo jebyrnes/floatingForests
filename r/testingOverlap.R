@@ -8,8 +8,13 @@ polysData <- getSpatialPolysDataFrameForOneImage(oneImage)
 #pOver <- gUnionCascaded(gBuffer(polysData, width=0)) #not needed
 
 #make a grid we'll be useing to count overlap with
-GT <- GridTopology(bbox(polysData)[,1], rep(0.001,2), c(532, 484))
+GT <- GridTopology(c(oneImage$lower_left_x[1], oneImage$lower_left_y[1]), 
+                   c((oneImage$upper_right_x[1]-oneImage$lower_left_x[1])/532,
+                     (oneImage$upper_right_y[1]-oneImage$lower_left_y[1])/484),
+                     c(533, 485))
 SPG <- SpatialGrid(GT, proj4string=projection(polysData))
+plot(SPG, col="lightgrey")
+plot(polysData, add=T, col="red")
 
 plot(polysData)
 plot(SPG, add=T, col="lightgrey")
