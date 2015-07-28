@@ -32,8 +32,12 @@ plot(1:14, uniqueOverlapCount, type="b")
 plot(1:14, sumOverlapCount, type="b")
 
 #ct <- sapply(o, length)
-ct <- sapply(1:length(SPG), function(x) sum(z==x))
+#ct <- sapply(1:length(SPG), function(x) sum(z==x))
+ct <- sapply(unique(z), function(x) sum(z==x))
+ct2 <- rep(0, length(SPG))
+ct2[unique(z)] <- ct
 SPG.df <- SpatialGridDataFrame(SPG,  data=data.frame(ct=ct))
+SPG.df <- SpatialGridDataFrame(SPG,  data=data.frame(ct=ct3))
 b <- brick(SPG.df) 
 b <- crop(b, extent(polysData))
 spplot(b)
