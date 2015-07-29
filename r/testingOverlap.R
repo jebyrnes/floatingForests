@@ -46,7 +46,7 @@ plot(1:14, sumOverlapCount, type="b")
 ct <- sapply(unique(z), function(x) sum(z==x))
 ct2 <- rep(0, length(SPG)) #blank vector of 0's as defauls
 ct2[unique(z)] <- ct
-SPG.df <- SpatialGridDataFrame(SPG,  data=data.frame(ct=ct))
+#SPG.df <- SpatialGridDataFrame(SPG,  data=data.frame(ct=ct))
 SPG.df <- SpatialGridDataFrame(SPG,  data=data.frame(ct=ct3))
 
 #let's plot it using rasters
@@ -54,3 +54,24 @@ library(raster)
 b <- brick(SPG.df) 
 b <- crop(b, extent(polysData))
 spplot(b)
+
+
+######or - easier!
+pixelCount <- getOverlapPixels(polysData,
+                               oneImage$lower_left_x[1], 
+                               oneImage$lower_left_y[1],
+                               oneImage$upper_right_x[1], 
+                               oneImage$upper_right_y[1])
+
+pixelGrid <- getOverlapPixels(polysData,
+                               oneImage$lower_left_x[1], 
+                               oneImage$lower_left_y[1],
+                               oneImage$upper_right_x[1], 
+                               oneImage$upper_right_y[1],
+                              output="grid")
+
+#let's plot it using rasters
+library(raster)
+pixelRaster <- brick(pixelGrid) 
+pixelRaster <- crop(pixelRaster, extent(polysData))
+spplot(pixelRaster)

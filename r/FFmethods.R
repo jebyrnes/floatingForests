@@ -183,3 +183,42 @@ getCorrectCorners <- function(subject="AKP00016e6",
 
   list(ll=c(newx[1], newy[1]), ur = c(newx[2], newy[2]))
 }
+
+
+#For overlap analysis
+getOverlapPixels <- function(userPolygonDataFrame, 
+                             llx, lly, urx, ury,
+                             xPixels = 532, yPixels = 484,
+                             output="pixels", defaultCellValue=0){
+  
+  #make a grid we'll be useing to count overlap with
+  GT <- GridTopology(c(llx, lly), 
+                     c((urx-llx)/xPixels,
+                       (ury-lly)/yPixels),
+                     c(xPixels+1, yPixels+1))
+  
+  SPG <- SpatialGrid(GT, proj4string=projection(userPolygonDataFrame))
+  
+  #get the overlap pixel numbers with the grid and each polygon
+  o <- over(userPolygonDataFrame, SPG, returnList=T, fn=sum)
+  oVec <- unlist(o) 
+  
+  #count number of polygons overlapping each pixel in the grid
+  pixelCount <- sapply(unique(oVec), function(x) sum(oVec==x))
+  
+  if(output=="grid") {
+    #first, make a vector of counts matching the grid
+    #by getting all counts, and then using their indices to make a count
+    #vector that matches the length of the grid.
+    ct <- sapply(unique(oVec), function(x) sum(oVec==x))
+    ct2 <- rep(defaultCellValue, length(SPG)) #blank vector of 0's as defauls
+    ct2[unique(oVec)] <- ct
+    
+    #turn this into a 
+    SPG.df <- SpatialGridDataFrame(SPG,  data=data.frame(polygonCount=ct2))
+    
+    return(SPG.df)
+  }
+  
+  pixelCount
+}
