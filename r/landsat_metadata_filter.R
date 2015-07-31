@@ -16,13 +16,13 @@ scenes <- sapply(subjects,function(x){
 } )
 
 scenes <- unique(scenes)
-scenes <- gsub('.tar.gz', '', scenes)
+scenesFiltered <- gsub('.tar.gz', '', scenes)
 
-#rm(kelpzoo)
+#rm(kelpzoo) #for filesize
 
-lsMeta <- read_csv("../../landsat_metadata/landsat_metadata_selected.csv")
+lsMeta<- read_csv("../../landsat_metadata/landsat_metadata_selected.csv")
 
-lsMeta2 <- lsMeta %>% filter( sceneID %in% scenes)
+lsMeta2 <- lsMeta %>% filter( sceneID %in% scenesFiltered)
 
 
 write.csv(lsMeta2, "../data/landsat_scenes_filtered_metadata.csv", row.names=F)
