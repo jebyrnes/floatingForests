@@ -1,0 +1,3 @@
+Each image is 364 pixels tall by 400 pixels wide = ~131 km^2
+12km wide x 10.92 wide
+It is then stretched into an image 484 pixels tall by 532 pixels wide
