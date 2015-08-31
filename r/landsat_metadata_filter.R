@@ -20,7 +20,8 @@ scenesFiltered <- gsub('.tar.gz', '', scenes)
 
 #rm(kelpzoo) #for filesize
 
-lsMeta<- read_csv("../../landsat_metadata/landsat_metadata_selected.csv")
+lsMeta<- read_csv("../../landsat_metadata/landsat_metadata_selected.csv", 
+                  col_types = paste0(c("cc", rep("d", 10), rep("c", 12)), collapse=""))
 
 lsMeta2 <- lsMeta %>% filter( sceneID %in% scenesFiltered)
 

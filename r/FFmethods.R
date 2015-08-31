@@ -97,7 +97,11 @@ getSpatialPolysDataFrameForOneImage <- function(aframe, proj="+proj=merc +datum=
   
   row.names(newFrame) <- newFrame$user_name
   
-  SpatialPolygonsDataFrame(spatialPolys, data=as.data.frame(newFrame))
+  ret <- SpatialPolygonsDataFrame(spatialPolys, data=as.data.frame(newFrame))
+  ret@bbox <- matrix(c(aframe$lower_left_x[1], aframe$lower_left_y[1],
+                       aframe$upper_right_x[1], aframe$upper_right_y[1]), nrow=2)
+  
+  ret
 }
 
 #takes a list of indices of users and returns the 
@@ -118,7 +122,7 @@ getAreaFromUserCombn <- function(idx, spdf=polysData, type="shared"){
   
 }
 
-######Get correct corners
+######Get correct corners?
 getCorrectCorners <- function(subject="AKP00016e6",
                               n_row=20, n_cols=20,
                               scene_y_pixels =7981, 

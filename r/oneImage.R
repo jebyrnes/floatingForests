@@ -11,6 +11,7 @@
 source("./FFmethods.R")
 source("./parseZooData.R")
 #oneImage <- read.csv("../data/AKP00016e6.csv")
+#https://static.zooniverse.org/www.floatingforests.org/subjects/53e61b1149547333204f5c00.jpg
 
 library(ggplot2)
 
