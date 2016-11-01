@@ -157,7 +157,7 @@ summary(calGLM)
 
 ggplot(data=calDF, mapping=aes(x=FF, y=calibration)) +
   geom_point(alpha=0) +
-  stat_smooth(method=glm, family="binomial", color="red", lwd=2) +
+  stat_smooth(method=glm, method.args=list(family=binomial), color="red", lwd=2) +
   geom_jitter(position = position_jitter(width = .5, height=0.01)) +
   theme_bw(base_size=24) +
   xlab("\n# of People Selecting Pixel") + ylab("Pixel Included in Calibration Set\n(1=yes, 0=no)\n")
